@@ -1,0 +1,30 @@
+version: "3.2"
+
+services:
+    # image project
+    myapp:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        restart: unless-stopped
+        working_dir: /var/www/
+        volumes:
+            - ./:/var/www
+        networks:
+            - local_myapp
+
+    # nginx
+    nginx:
+        image: nginx:latest
+        restart: unless-stopped
+        ports:
+            - "9999:80"
+        volumes:
+            - ./:/var/www
+            - ./docker-config/nginx/site.conf:/etc/nginx/conf.d/site.conf
+        networks:
+            - local_myapp
+
+networks:
+    local_myapp:
+        driver: bridge        
